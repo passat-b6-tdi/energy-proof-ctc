@@ -1,0 +1,29 @@
+{
+  "name": "energy-proof-ctc",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "description": "EnergyProof CTC - cross-chain energy settlement verified through the Attestcoin Protocol on Creditcoin. BUIDL CTC 2026 Fall (DePIN track).",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test -vv",
+    "worker": "tsx worker/watch.ts",
+    "meter:produce": "tsx worker/produce.ts",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"worker/**/*.ts\"",
+    "format:sol": "forge fmt"
+  },
+  "dependencies": {
+    "@gluwa/usc-contracts": "0.1.2",
+    "@gluwa/usc-sdk": "0.18.0",
+    "@openzeppelin/contracts": "5.4.0",
+    "dotenv": "17.4.2",
+    "ethers": "^6.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prettier": "^3.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
