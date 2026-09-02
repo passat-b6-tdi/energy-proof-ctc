@@ -34,7 +34,7 @@ contract EnergyMeter is Register {
 
         OracleData storage oracleData = oracleDatas[msg.sender];
 
-        energyData = EnergyData(msg.sender, wattHours, readingId);
+        energyData = EnergyData(wattHours, msg.sender, readingId);
 
         oracleData.totalWattHoursRecorded += wattHours;
         oracleData.readingIds.push(readingId);
