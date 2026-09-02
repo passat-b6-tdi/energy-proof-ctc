@@ -21,29 +21,39 @@ contract EnergyMeter is Register {
         bytes32[] readingIds;
     }
 
-    // 1e9 Wh = 1 GWh
+    struct ProducerData {
+        uint256 totalWattHoursProduced;
+        bytes32[] readingIds;
+    }
+
     uint32 public constant MAX_WATT_HOURS = 1_000_000_000;
 
     mapping(bytes32 readingId => EnergyData) public energyDatas;
 
     mapping(address oracle => OracleData) internal _oracleDatas;
 
+    mapping(address producer => ProducerData) internal _producerDatas;
+
     constructor() {
         _grantRole(REGISTER_ROLE, msg.sender);
         _grantRole(ORACLE_ROLE, msg.sender);
     }
 
-    function recordProduction(uint32 wattHours, bytes32 readingId) external onlyRole(ORACLE_ROLE) {
+    function recordProduction(uint32 wattHours, address producer, bytes32 readingId) external onlyRole(ORACLE_ROLE) {
         require(readingId != bytes32(0), ZeroReadingId());
         require(wattHours > 0 && wattHours <= MAX_WATT_HOURS, WrongWattHours(wattHours));
 
         EnergyData storage energyData = energyDatas[readingId];
         require(energyData.readingId == bytes32(0), ReadingIdAlreadyUsed(readingId));
-        energyData = EnergyData({wattHours: wattHours, oracle: msg.sender, readingId: readingId});
+        energyData = EnergyData({wattHours: wattHours, oracle: msg.sender, producer: producer, readingId: readingId});
 
         OracleData storage oracleData = _oracleDatas[msg.sender];
         oracleData.totalWattHoursRecorded += wattHours;
         oracleData.readingIds.push(readingId);
+
+        ProducerData storage producerData = _producerDatas[producer];
+        producerData.totalWattHoursProduced += wattHours;
+        producerData.readingIds.push(readingId);
 
         emit EnergyProduced(msg.sender, wattHours, readingId);
     }
@@ -54,5 +64,13 @@ contract EnergyMeter is Register {
 
     function oracleReadingIds(address oracle) external view returns (bytes32[] memory) {
         return _oracleDatas[oracle].readingIds;
+    }
+
+    function producerTotal(address producer) external view returns (uint256) {
+        return _producerDatas[producer].totalWattHoursProduced;
+    }
+
+    function producerReadingIds(address producer) external view returns (bytes32[] memory) {
+        return _producerDatas[producer].readingIds;
     }
 }
