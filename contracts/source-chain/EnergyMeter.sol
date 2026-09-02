@@ -8,15 +8,21 @@ contract EnergyMeter is Register {
     error WrongWattHours(uint32 wattHours);
     error ReadingIdAlreadyUsed(bytes32 readingId);
 
-    event EnergyProduced(address indexed oracle, uint32 wattHours, bytes32 indexed readingId);
+    event EnergyProduced(address indexed oracle, bytes32 indexed readingId, EnergyParams params);
 
     struct EnergyData {
         uint32 wattHours;
         address oracle;
+        address producer;
+    }
+
+    struct EnergyParams {
+        uint32 wattHours;
+        address producer;
         bytes32 readingId;
     }
 
-    struct OracleData {
+    struct UserData {
         uint256 totalWattHoursRecorded;
         bytes32[] readingIds;
     }
@@ -30,32 +36,23 @@ contract EnergyMeter is Register {
 
     mapping(bytes32 readingId => EnergyData) public energyDatas;
 
-    mapping(address oracle => OracleData) internal _oracleDatas;
+    mapping(address oracle => UserData) internal _oracleDatas;
 
-    mapping(address producer => ProducerData) internal _producerDatas;
+    mapping(address producer => UserData) internal _producerDatas;
 
     constructor() {
         _grantRole(REGISTER_ROLE, msg.sender);
         _grantRole(ORACLE_ROLE, msg.sender);
     }
 
-    function recordProduction(uint32 wattHours, address producer, bytes32 readingId) external onlyRole(ORACLE_ROLE) {
-        require(readingId != bytes32(0), ZeroReadingId());
-        require(wattHours > 0 && wattHours <= MAX_WATT_HOURS, WrongWattHours(wattHours));
+    function recordProduction(EnergyParams[] memory energyParams) external onlyRole(ORACLE_ROLE) {
+        _recordProduction(energyParams);
+    }
 
-        EnergyData storage energyData = energyDatas[readingId];
-        require(energyData.readingId == bytes32(0), ReadingIdAlreadyUsed(readingId));
-        energyData = EnergyData({wattHours: wattHours, oracle: msg.sender, producer: producer, readingId: readingId});
-
-        OracleData storage oracleData = _oracleDatas[msg.sender];
-        oracleData.totalWattHoursRecorded += wattHours;
-        oracleData.readingIds.push(readingId);
-
-        ProducerData storage producerData = _producerDatas[producer];
-        producerData.totalWattHoursProduced += wattHours;
-        producerData.readingIds.push(readingId);
-
-        emit EnergyProduced(msg.sender, wattHours, readingId);
+    function recordProductions(EnergyParams[] memory energyParamsArray) external onlyRole(ORACLE_ROLE) {
+        for (uint256 i = 0; i < energyParamsArray.length; i++) {
+            _recordProduction(energyParamsArray[i]);
+        }
     }
 
     function oracleTotal(address oracle) external view returns (uint256) {
@@ -72,5 +69,32 @@ contract EnergyMeter is Register {
 
     function producerReadingIds(address producer) external view returns (bytes32[] memory) {
         return _producerDatas[producer].readingIds;
+    }
+
+    function _recordProduction(EnergyParams memory energyParams) internal {
+        require(energyParams.readingId != bytes32(0), ZeroReadingId());
+        require(
+            energyParams.wattHours > 0 && energyParams.wattHours <= MAX_WATT_HOURS,
+            WrongWattHours(energyParams.wattHours)
+        );
+
+        EnergyData storage energyDataStorage = energyDatas[energyParams.readingId];
+        require(energyDataStorage.readingId == bytes32(0), ReadingIdAlreadyUsed(energyParams.readingId));
+        energyDataStorage = EnergyData({
+            wattHours: energyParams.wattHours,
+            oracle: msg.sender,
+            producer: energyParams.producer,
+            readingId: energyParams.readingId
+        });
+
+        _setUserData(_oracleDatas[msg.sender], energyParams);
+        _setUserData(_producerDatas[energyParams.producer], energyParams);
+
+        emit EnergyProduced(msg.sender, energyParams.readingId, energyParams);
+    }
+
+    function _setUserData(UserData storage userData, EnergyParams memory energyParams) internal {
+        userData.totalWattHoursRecorded += energyParams.wattHours;
+        userData.readingIds.push(energyParams.readingId);
     }
 }
