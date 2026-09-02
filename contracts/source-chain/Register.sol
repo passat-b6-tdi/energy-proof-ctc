@@ -8,7 +8,7 @@ abstract contract Register is AccessControl {
     bytes32 public constant ORACLE_ROLE = keccak256("ORACLE_ROLE");
 
     constructor() {
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
     function grantRegisterRole(address register) external onlyRole(DEFAULT_ADMIN_ROLE) {
