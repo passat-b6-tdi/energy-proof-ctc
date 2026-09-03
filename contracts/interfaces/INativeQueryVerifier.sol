@@ -8,9 +8,9 @@ interface INativeQueryVerifierExpanded is INativeQueryVerifier {
         uint64 chainKey,
         uint64 height,
         bytes calldata encodedTransaction,
-        MerkleProof calldata merkleProof,
-        ContinuityProof calldata continuityProof
+        INativeQueryVerifier.MerkleProof calldata merkleProof,
+        INativeQueryVerifier.ContinuityProof calldata continuityProof
     ) external returns (bool);
 
-    function calculateTxIndex(MerkleProof calldata merkleProof) external view returns (uint64);
+    function calculateTxIndex(INativeQueryVerifier.MerkleProof calldata merkleProof) external view returns (uint64);
 }
