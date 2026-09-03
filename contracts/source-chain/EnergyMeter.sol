@@ -43,7 +43,7 @@ contract EnergyMeter is Register {
         _grantRole(ORACLE_ROLE, msg.sender);
     }
 
-    function recordProduction(EnergyParams[] memory energyParams) external onlyRole(ORACLE_ROLE) {
+    function recordProduction(EnergyParams memory energyParams) external onlyRole(ORACLE_ROLE) {
         _recordProduction(energyParams);
     }
 
