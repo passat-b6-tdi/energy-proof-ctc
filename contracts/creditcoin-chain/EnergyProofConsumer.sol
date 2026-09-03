@@ -14,11 +14,12 @@ contract EnergyProofConsumer is AttestcoinReader {
     error MalformedLog();
     error ZeroProducer();
     error WattHoursOutOfRange(uint256 wattHours);
+    error ZeroEnergyMeter();
+    error ZeroLedger();
 
     /// @notice keccak256("EnergyProduced(address,address,bytes32,uint32)").
     bytes32 public constant ENERGY_PRODUCED_SIG = keccak256("EnergyProduced(address,address,bytes32,uint32)");
 
-    bytes32 public constant ENERGY_PRODUCED_SIG = keccak256("EnergyProduced(address,bytes32,(uint32,address,bytes32))");
     uint256 public constant MAX_WATT_HOURS = 1_000_000_000;
 
     uint64 public immutable sourceChainKey;
@@ -26,6 +27,8 @@ contract EnergyProofConsumer is AttestcoinReader {
     IEnergyCreditLedger public immutable ledger;
 
     constructor(uint64 sourceChainKey_, address energyMeter_, address ledger_) {
+        require(energyMeter_ != address(0), ZeroEnergyMeter());
+        require(ledger_ != address(0), ZeroLedger());
         sourceChainKey = sourceChainKey_;
         energyMeter = energyMeter_;
         ledger = IEnergyCreditLedger(ledger_);
