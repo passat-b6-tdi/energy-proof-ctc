@@ -8,12 +8,13 @@ contract EnergyMeter is Register {
     error WrongWattHours(uint32 wattHours);
     error ReadingIdAlreadyUsed(bytes32 readingId);
 
-    event EnergyProduced(address indexed oracle, bytes32 indexed readingId, EnergyParams params);
+    event EnergyProduced(address indexed oracle, address indexed producer, bytes32 indexed readingId, uint32 wattHours);
 
     struct EnergyData {
         uint32 wattHours;
         address oracle;
         address producer;
+        bytes32 readingId;
     }
 
     struct EnergyParams {
@@ -76,17 +77,15 @@ contract EnergyMeter is Register {
 
         EnergyData storage energyDataStorage = energyDatas[energyParams.readingId];
         require(energyDataStorage.oracle == address(0), ReadingIdAlreadyUsed(energyParams.readingId));
-        energyDataStorage = EnergyData({
-            wattHours: energyParams.wattHours,
-            oracle: msg.sender,
-            producer: energyParams.producer,
-            readingId: energyParams.readingId
-        });
+        energyDataStorage.wattHours = energyParams.wattHours;
+        energyDataStorage.oracle = msg.sender;
+        energyDataStorage.producer = energyParams.producer;
+        energyDataStorage.readingId = energyParams.readingId;
 
         _setUserData(_oracleDatas[msg.sender], energyParams);
         _setUserData(_producerDatas[energyParams.producer], energyParams);
 
-        emit EnergyProduced(msg.sender, energyParams.readingId, energyParams);
+        emit EnergyProduced(msg.sender, energyParams.producer, energyParams.readingId, energyParams.wattHours);
     }
 
     function _setUserData(UserData storage userData, EnergyParams memory energyParams) internal {
