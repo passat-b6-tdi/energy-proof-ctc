@@ -47,12 +47,6 @@ contract EnergyMeter is Register {
         _recordProduction(energyParams);
     }
 
-    function recordProductions(EnergyParams[] memory energyParamsArray) external onlyRole(ORACLE_ROLE) {
-        for (uint256 i = 0; i < energyParamsArray.length; i++) {
-            _recordProduction(energyParamsArray[i]);
-        }
-    }
-
     function oracleTotal(address oracle) external view returns (uint256) {
         return _oracleDatas[oracle].totalWattHoursRecorded;
     }
