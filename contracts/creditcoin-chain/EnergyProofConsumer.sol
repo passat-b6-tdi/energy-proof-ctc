@@ -15,6 +15,9 @@ contract EnergyProofConsumer is AttestcoinReader {
     error ZeroProducer();
     error WattHoursOutOfRange(uint256 wattHours);
 
+    /// @notice keccak256("EnergyProduced(address,address,bytes32,uint32)").
+    bytes32 public constant ENERGY_PRODUCED_SIG = keccak256("EnergyProduced(address,address,bytes32,uint32)");
+
     bytes32 public constant ENERGY_PRODUCED_SIG = keccak256("EnergyProduced(address,bytes32,(uint32,address,bytes32))");
     uint256 public constant MAX_WATT_HOURS = 1_000_000_000;
 
@@ -28,10 +31,12 @@ contract EnergyProofConsumer is AttestcoinReader {
         ledger = IEnergyCreditLedger(ledger_);
     }
 
-    function _onVerifiedTransaction(bytes32 queryId, uint64 chainKey, bytes memory encodedTransaction)
-        internal
-        override
-    {
+    function _onVerifiedTransaction(
+        bytes32 queryId,
+        uint64 chainKey,
+        uint64 blockHeight,
+        bytes memory encodedTransaction
+    ) internal override {
         require(chainKey == sourceChainKey, UnexpectedSourceChain(chainKey));
 
         uint8 txType = EvmV1Decoder.getTransactionType(encodedTransaction);
@@ -41,23 +46,26 @@ contract EnergyProofConsumer is AttestcoinReader {
         require(receipt.receiptStatus == 1, SourceTransactionReverted());
 
         EvmV1Decoder.LogEntry[] memory logs = EvmV1Decoder.getLogsByEventSignature(receipt, ENERGY_PRODUCED_SIG);
-        require(logs.length > 0, NoEnergyProducedLog());
+        require(logs.length == 1, MalformedLog());
 
+        // MVP: one reading per source transaction, so the first matching log is authoritative.
         EvmV1Decoder.LogEntry memory log = logs[0];
 
-        require(logs.address_ == energyMeter, WrongEmitter(log.address_));
+        require(log.address_ == energyMeter, WrongEmitter(log.address_));
 
-        // EnergyProduced(address indexed oracle, bytes32 indexed readingId, EnergyParams params)
-        // topics = [sig, oracle, readingId]
-        // data = abi.encode(params)
-        require(log.topics.length == 3 && log.topics[0] == ENERGY_PRODUCED_SIG, MalformedLog());
-        require(log.data.length == 96, MalformedLog());
+        // EnergyProduced(address indexed oracle, address indexed producer,
+        //                bytes32 indexed readingId, uint32 wattHours)
+        // topics = [sig, oracle, producer, readingId]; data = abi.encode(wattHours).
+        require(log.topics.length == 4 && log.topics[0] == ENERGY_PRODUCED_SIG, MalformedLog());
+        require(log.data.length == 32, MalformedLog());
 
-        (uint32 wattHours, address producer, bytes32 readingId) = abi.decode(log.data, (uint32, address, bytes32));
+        address producer = address(uint160(uint256(log.topics[2])));
+        bytes32 readingId = log.topics[3];
+        uint32 wattHours = abi.decode(log.data, (uint32));
 
         require(producer != address(0), ZeroProducer());
         require(wattHours > 0 && wattHours <= MAX_WATT_HOURS, WattHoursOutOfRange(wattHours));
 
-        ledger.credit(producer, wattHours, readingId, queryId);
+        ledger.credit(producer, wattHours, readingId, queryId, chainKey, blockHeight);
     }
 }
