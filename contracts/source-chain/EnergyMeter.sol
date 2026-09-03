@@ -27,10 +27,6 @@ contract EnergyMeter is Register {
         bytes32[] readingIds;
     }
 
-    struct ProducerData {
-        uint256 totalWattHoursProduced;
-        bytes32[] readingIds;
-    }
 
     uint32 public constant MAX_WATT_HOURS = 1_000_000_000;
 
@@ -79,7 +75,7 @@ contract EnergyMeter is Register {
         );
 
         EnergyData storage energyDataStorage = energyDatas[energyParams.readingId];
-        require(energyDataStorage.readingId == bytes32(0), ReadingIdAlreadyUsed(energyParams.readingId));
+        require(energyDataStorage.oracle == address(0), ReadingIdAlreadyUsed(energyParams.readingId));
         energyDataStorage = EnergyData({
             wattHours: energyParams.wattHours,
             oracle: msg.sender,
