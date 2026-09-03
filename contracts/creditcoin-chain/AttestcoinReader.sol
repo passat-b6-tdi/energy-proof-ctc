@@ -29,7 +29,7 @@ abstract contract AttestcoinReader {
         processedQueries[queryId] = true;
         emit QueryProcessed(queryId, chainKey, blockHeight);
 
-        _onVerifiedTransaction(queryId, chainKey, encodedTransaction);
+        _onVerifiedTransaction(queryId, chainKey, blockHeight, encodedTransaction);
         return true;
     }
 
@@ -60,5 +60,10 @@ abstract contract AttestcoinReader {
         return keccak256(abi.encodePacked(chainKey, blockHeight, txIndex));
     }
 
-    function _onVerifiedTransaction(bytes32 queryId, uint64 chainKey, bytes memory encodedTransaction) internal virtual;
+    function _onVerifiedTransaction(
+        bytes32 queryId,
+        uint64 chainKey,
+        uint64 blockHeight,
+        bytes memory encodedTransaction
+    ) internal virtual;
 }
