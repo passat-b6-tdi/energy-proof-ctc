@@ -5,6 +5,7 @@ import {Register} from "./Register.sol";
 
 contract EnergyMeter is Register {
     error ZeroReadingId();
+    error ZeroProducer();
     error WrongWattHours(uint32 wattHours);
     error ReadingIdAlreadyUsed(bytes32 readingId);
 
@@ -70,6 +71,7 @@ contract EnergyMeter is Register {
 
     function _recordProduction(EnergyParams memory energyParams) internal {
         require(energyParams.readingId != bytes32(0), ZeroReadingId());
+        require(energyParams.producer != address(0), ZeroProducer());
         require(
             energyParams.wattHours > 0 && energyParams.wattHours <= MAX_WATT_HOURS,
             WrongWattHours(energyParams.wattHours)
