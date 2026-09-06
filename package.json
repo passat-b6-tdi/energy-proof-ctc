@@ -9,6 +9,7 @@
     "test": "forge test -vv",
     "worker": "tsx worker/watch.ts",
     "meter:produce": "tsx worker/produce.ts",
+    "demo": "tsx worker/submit-proof.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"worker/**/*.ts\"",
     "format:sol": "forge fmt"
