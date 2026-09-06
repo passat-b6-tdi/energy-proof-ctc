@@ -5,12 +5,24 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 import {IEnergyCreditLedger} from "../interfaces/IEnergyCreditLedger.sol";
 
+/// @title EnergyCreditLedger
+/// @notice Creditcoin ledger for energy credits created by verified source
+///         readings.
+/// @dev The deployer grants `CONSUMER_ROLE` to the deployed consumer. This role
+///      is the only write authorization; each reading ID is settled once.
 contract EnergyCreditLedger is IEnergyCreditLedger, AccessControl {
+    /// @notice A settlement cannot credit the zero address.
     error ZeroProducer();
+    /// @notice A settlement must identify a source reading.
     error ZeroReadingId();
+    /// @notice A source reading cannot be settled twice.
     error ReadingAlreadySettled(bytes32 readingId);
+    /// @notice A settlement must retain its proof query identifier.
+    error ZeroQueryId();
+    /// @notice A settlement must credit a positive amount.
+    error ZeroWattHours();
 
-    event ConsumerInitialized(address indexed consumer);
+    /// @notice Emitted after a verified reading increases a producer balance.
     event SettlementRecorded(
         address indexed producer,
         uint256 wattHours,
@@ -23,11 +35,12 @@ contract EnergyCreditLedger is IEnergyCreditLedger, AccessControl {
 
     /// @inheritdoc IEnergyCreditLedger
     mapping(address => uint256) public balanceOf;
-    /// @notice Sum of all credited watt-hours.
+    /// @notice Sum of all settled watt-hours across producers.
     uint256 public totalCredited;
 
     mapping(bytes32 => Settlement) private _settlements;
 
+    /// @notice Grant the deployer the admin role used to wire the consumer.
     constructor() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
