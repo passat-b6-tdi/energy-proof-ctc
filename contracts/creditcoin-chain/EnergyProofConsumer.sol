@@ -78,6 +78,7 @@ contract EnergyProofConsumer is AttestcoinReader {
         require(receipt.receiptStatus == 1, SourceTransactionReverted());
 
         EvmV1Decoder.LogEntry[] memory logs = EvmV1Decoder.getLogsByEventSignature(receipt, ENERGY_PRODUCED_SIG);
+        require(logs.length > 0, NoEnergyProducedLog());
         require(logs.length == 1, MalformedLog());
 
         // MVP: one reading per source transaction, so the first matching log is authoritative.

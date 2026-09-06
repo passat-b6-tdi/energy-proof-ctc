@@ -56,6 +56,8 @@ contract EnergyCreditLedger is IEnergyCreditLedger, AccessControl {
     ) external onlyRole(CONSUMER_ROLE) {
         require(producer != address(0), ZeroProducer());
         require(readingId != bytes32(0), ZeroReadingId());
+        require(queryId != bytes32(0), ZeroQueryId());
+        require(wattHours > 0, ZeroWattHours());
         require(!settled(readingId), ReadingAlreadySettled(readingId));
 
         uint256 newBalance = balanceOf[producer] + wattHours;
