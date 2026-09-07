@@ -9,6 +9,8 @@
     "test": "forge test -vv",
     "worker": "tsx worker/watch.ts",
     "meter:produce": "tsx worker/produce.ts",
+    "demo:produce": "tsx worker/produce-batch.ts",
+    "demo:producers": "tsx worker/demo-producers.ts",
     "demo": "tsx worker/submit-proof.ts",
     "deploy:decoder": "bash script/deploy-decoder.sh",
     "deploy:meter": "bash script/deploy-sepolia.sh",
