@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import { Contract, JsonRpcProvider, Wallet, id } from 'ethers';
+import { Contract, JsonRpcProvider, id } from 'ethers';
+import {createSigner} from './signer.js';
 
 const METER_ABI = [
   'function recordProduction(tuple(uint32 wattHours, address producer, bytes32 readingId) energyParams)',
@@ -18,7 +19,7 @@ async function main(): Promise<void> {
   }
 
   const provider = new JsonRpcProvider(required('SOURCE_CHAIN_RPC_URL'));
-  const signer = new Wallet(required('DEPLOYER_PRIVATE_KEY'), provider);
+  const signer = await createSigner(provider);
   const meter = new Contract(required('ENERGY_METER_ADDRESS'), METER_ABI, signer);
   const readingId = readingIdArg ?? id(`${Date.now()}:${producer}`);
   const transaction = await meter.recordProduction({wattHours: BigInt(wattHoursArg), producer, readingId});

@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { chainInfo, proofProvider } from '@gluwa/usc-sdk';
-import { Contract, JsonRpcProvider, Wallet } from 'ethers';
+import { Contract, JsonRpcProvider } from 'ethers';
+import {createSigner} from './signer.js';
 
 const CONSUMER_ABI = [
   'function execute(uint64 chainKey, uint64 blockHeight, bytes encodedTransaction, tuple(bytes32 root, tuple(bytes32 hash, bool isLeft)[] siblings) merkleProof, tuple(bytes32 lowerEndpointDigest, bytes32[] roots) continuityProof) returns (bool)',
@@ -22,7 +23,6 @@ async function main(): Promise<void> {
 
   const sourceRpcUrl = required('SOURCE_CHAIN_RPC_URL');
   const creditcoinRpcUrl = required('CREDITCOIN_RPC_URL');
-  const privateKey = required('DEPLOYER_PRIVATE_KEY');
   const consumerAddress = required('ENERGY_PROOF_CONSUMER_ADDRESS');
   const proofBuilderUrl = required('PROOF_BUILDER_URL');
   const chainKey = Number(process.env.SOURCE_CHAIN_KEY ?? '1');
@@ -31,7 +31,7 @@ async function main(): Promise<void> {
 
   const sourceProvider = new JsonRpcProvider(sourceRpcUrl);
   const creditcoinProvider = new JsonRpcProvider(creditcoinRpcUrl);
-  const signer = new Wallet(privateKey, creditcoinProvider);
+  const signer = await createSigner(creditcoinProvider);
   const consumer = new Contract(consumerAddress, CONSUMER_ABI, signer);
 
   const sourceTx = await sourceProvider.getTransaction(txHash);
