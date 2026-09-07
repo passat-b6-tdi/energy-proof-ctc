@@ -10,6 +10,12 @@
     "worker": "tsx worker/watch.ts",
     "meter:produce": "tsx worker/produce.ts",
     "demo": "tsx worker/submit-proof.ts",
+    "deploy:decoder": "bash script/deploy-decoder.sh",
+    "deploy:meter": "bash script/deploy-sepolia.sh",
+    "deploy:creditcoin": "bash script/deploy-creditcoin.sh",
+    "verify:creditcoin": "bash script/verify-creditcoin.sh",
+    "wire:creditcoin": "bash script/wire-creditcoin.sh",
+    "ui": "python3 -m http.server 4173 --directory ui",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"worker/**/*.ts\"",
     "format:sol": "forge fmt"
