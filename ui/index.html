@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f1ea" />
+    <title>EnergyProof — verified energy settlement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#overview" aria-label="EnergyProof home">
+          <span class="brand-mark"
+            ><span></span><span></span><span></span
+          ></span>
+          <span>EnergyProof</span>
+        </a>
+        <div class="side-label">Workspace</div>
+        <nav class="nav" aria-label="Main navigation">
+          <a class="nav-item active" href="#overview"
+            ><span class="nav-icon">◒</span>Overview</a
+          >
+          <a class="nav-item" href="#readings"
+            ><span class="nav-icon">⌁</span>Readings</a
+          >
+          <a class="nav-item" href="#network"
+            ><span class="nav-icon">⊙</span>Network</a
+          >
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="network-card">
+            <div class="network-card-head">
+              <span class="status-dot"></span>Demo network
+            </div>
+            <div class="network-name">
+              Sepolia · ETH <span>→</span> Creditcoin · tCTC
+            </div>
+            <div class="network-meta">11155111 → 102031 · Attestcoin path</div>
+          </div>
+          <a
+            class="help-link"
+            href="https://docs.creditcoin.org/creditcoin-usc"
+            target="_blank"
+            rel="noreferrer"
+            >Protocol docs <span>↗</span></a
+          >
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs">
+            <span>EnergyProof</span><span>/</span><strong>Operations</strong>
+          </div>
+          <div class="top-actions">
+            <span class="live-pill"><i></i> Connecting…</span
+            ><button class="outline-button" id="connectButton">
+              Connect wallet
+            </button>
+          </div>
+        </header>
+
+        <section class="page-heading" id="overview">
+          <div>
+            <h1>Proof before credit.</h1>
+            <p class="intro">
+              A transparent view of energy readings verified on Ethereum Sepolia
+              and settled on Creditcoin.
+            </p>
+          </div>
+          <button class="primary-button" id="runDemo">
+            <span>↻</span> Refresh live data
+          </button>
+        </section>
+
+        <section class="metric-grid" aria-label="Key metrics">
+          <article class="metric-card accent-card">
+            <div class="metric-top">
+              <span>Verified production</span
+              ><span class="metric-badge" id="energyStatus">live</span>
+            </div>
+            <strong id="totalEnergy">—</strong
+            ><span class="metric-unit">Wh settled</span>
+            <div class="sparkline green-spark">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span>Proofs accepted</span
+              ><span class="metric-badge neutral">from ledger</span>
+            </div>
+            <strong id="proofCount">—</strong
+            ><span class="metric-unit">settled readings</span>
+            <div class="mini-bars">
+              <i style="height: 34%"></i><i style="height: 55%"></i
+              ><i style="height: 44%"></i><i style="height: 72%"></i
+              ><i style="height: 61%"></i><i style="height: 88%"></i
+              ><i style="height: 100%"></i>
+            </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top">
+              <span>Active producers</span
+              ><span class="metric-badge neutral">from events</span>
+            </div>
+            <strong id="producerCount">—</strong
+            ><span class="metric-unit">registered identities</span>
+            <div class="producer-avatars">
+              <span>—</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel readings-panel" id="readings">
+            <div class="panel-header">
+              <div>
+                <h2>Verified readings</h2>
+              </div>
+              <button class="text-button" id="viewAll">
+                View all <span>→</span>
+              </button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Reading</th>
+                    <th>Producer</th>
+                    <th>Energy</th>
+                    <th>Source block</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="readingsBody">
+                  <tr>
+                    <td colspan="5" class="empty-state">
+                      Configure deployed addresses in
+                      <span class="mono">ui/config.js</span> to load live
+                      readings.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel flow-panel" id="network">
+            <div class="panel-header">
+              <div>
+                <h2>How a credit is made</h2>
+              </div>
+            </div>
+            <div class="flow">
+              <div class="flow-step done">
+                <span class="flow-number">01</span>
+                <div>
+                  <strong>Meter event</strong
+                  ><small>EnergyMeter · Sepolia</small>
+                </div>
+                <span class="check">✓</span>
+              </div>
+              <div class="flow-line"></div>
+              <div class="flow-step done">
+                <span class="flow-number">02</span>
+                <div>
+                  <strong>Attestcoin proof</strong
+                  ><small>Merkle + continuity</small>
+                </div>
+                <span class="check">✓</span>
+              </div>
+              <div class="flow-line"></div>
+              <div class="flow-step active-step">
+                <span class="flow-number">03</span>
+                <div>
+                  <strong>Credit settlement</strong
+                  ><small>EnergyCreditLedger · CTC</small>
+                </div>
+                <span class="pulse">●</span>
+              </div>
+            </div>
+            <div class="integrity-note">
+              <span>⌁</span>
+              <div>
+                <strong>State changes only after proof</strong>
+                <p>Invalid proofs and replays settle nothing.</p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="proof-banner">
+          <div class="banner-mark">✓</div>
+          <div>
+            <h2>Every credit keeps its origin.</h2>
+            <p>
+              From the source-chain event to the final Creditcoin settlement,
+              the evidence stays linked by query ID and source block.
+            </p>
+          </div>
+          <button class="outline-button" id="provenanceButton">
+            Read provenance <span>↗</span>
+          </button>
+        </section>
+        <footer>
+          <span>EnergyProof CTC · BUIDL For The Real World</span
+          ><span>Built for the DePIN track</span>
+        </footer>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <div class="modal-backdrop" id="modal">
+      <div class="modal">
+        <button class="modal-close" id="closeModal">×</button>
+        <h2 id="modalTitle">Verified reading</h2>
+        <div class="detail-list" id="modalDetails"></div>
+        <div class="proof-chain" id="proofChain">
+          <span>Source event</span><b>→</b><span>Proof verified</span><b>→</b
+          ><span>Credit settled</span>
+        </div>
+      </div>
+    </div>
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
