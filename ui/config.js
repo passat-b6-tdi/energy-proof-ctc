@@ -1,0 +1,16 @@
+// Public RPC endpoints are safe to expose in a browser. Contract addresses
+// are filled after deployment; URL parameters can override them for a hosted demo.
+window.ENERGYPROOF_CONFIG = {
+  sourceRpcUrl: "https://ethereum-sepolia-rpc.publicnode.com",
+  sourceChainId: 11155111,
+  sourceCurrency: "ETH",
+  creditcoinRpcUrl: "https://rpc.cc3-testnet.creditcoin.network",
+  creditcoinChainId: 102031,
+  creditcoinCurrency: "tCTC",
+  meterAddress: "0x0d1b7c614e07B47153293469d356b6bA80978BF1",
+  ledgerAddress: "0x100FEb2D822CBb32C4e8f047D43615AC8851Ed79",
+  consumerAddress: "0x9e3743dEC51b82BD83d7fF7557650BF1C75ee096",
+  sourceStartBlock: 0,
+  sourceExplorer: "https://sepolia.etherscan.io",
+  creditcoinExplorer: "https://creditcoin-testnet.blockscout.com",
+};
