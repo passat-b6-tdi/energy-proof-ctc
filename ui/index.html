@@ -71,13 +71,38 @@
           <div>
             <h1>Proof before credit.</h1>
             <p class="intro">
-              A transparent view of energy readings verified on Ethereum Sepolia
-              and settled on Creditcoin.
+              A solar producer submits a meter reading. Attestcoin proves the
+              source event before Creditcoin settles the energy credit.
             </p>
           </div>
           <button class="primary-button" id="runDemo">
             <span>↻</span> Refresh live data
           </button>
+        </section>
+
+        <section class="proof-hero" aria-live="polite">
+          <div class="proof-hero-summary">
+            <span class="proof-label">Latest settled reading</span>
+            <strong><span id="heroEnergy">—</span> Wh</strong>
+            <p><span id="heroProducer">Waiting for live data</span><br /><span id="heroSourceBlock">Source block —</span></p>
+          </div>
+          <div class="proof-track" aria-label="Energy proof status">
+            <div class="proof-node">
+              <span>01</span><div><strong>Produced</strong><small>EnergyMeter · Sepolia</small></div>
+            </div>
+            <i></i>
+            <div class="proof-node">
+              <span>02</span><div><strong id="heroProofStatus">Proof verified</strong><small>Attestcoin · Merkle + continuity</small></div>
+            </div>
+            <i></i>
+            <div class="proof-node">
+              <span>03</span><div><strong id="heroSettlementStatus">Settled</strong><small>Creditcoin · EnergyCreditLedger</small></div>
+            </div>
+          </div>
+          <div class="proof-links">
+            <a id="heroSourceLink" href="#" target="_blank" rel="noreferrer" hidden>Source transaction ↗</a>
+            <a id="heroCreditLink" href="#" target="_blank" rel="noreferrer" hidden>Settlement transaction ↗</a>
+          </div>
         </section>
 
         <section class="metric-grid" aria-label="Key metrics">
@@ -105,6 +130,14 @@
               ><i style="height: 61%"></i><i style="height: 88%"></i
               ><i style="height: 100%"></i>
             </div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>Duplicate credits</span><span class="metric-badge neutral">replay guard</span></div>
+            <strong id="duplicateCount">—</strong><span class="metric-unit">duplicate IDs observed</span>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span>Connected chains</span><span class="metric-badge neutral">live config</span></div>
+            <strong id="chainCount">—</strong><span class="metric-unit">source + settlement</span>
           </article>
           <article class="metric-card">
             <div class="metric-top">
@@ -163,8 +196,8 @@
               <div class="flow-step done">
                 <span class="flow-number">01</span>
                 <div>
-                  <strong>Meter event</strong
-                  ><small>EnergyMeter · Sepolia</small>
+                  <strong>EnergyMeter</strong
+                  ><small>Emits a bounded production reading</small>
                 </div>
                 <span class="check">✓</span>
               </div>
@@ -172,8 +205,8 @@
               <div class="flow-step done">
                 <span class="flow-number">02</span>
                 <div>
-                  <strong>Attestcoin proof</strong
-                  ><small>Merkle + continuity</small>
+                  <strong>Attestcoin</strong
+                  ><small>Proves the source transaction</small>
                 </div>
                 <span class="check">✓</span>
               </div>
@@ -181,8 +214,8 @@
               <div class="flow-step active-step">
                 <span class="flow-number">03</span>
                 <div>
-                  <strong>Credit settlement</strong
-                  ><small>EnergyCreditLedger · CTC</small>
+                  <strong>Creditcoin Ledger</strong
+                  ><small>Credits only after proof</small>
                 </div>
                 <span class="pulse">●</span>
               </div>
@@ -209,6 +242,34 @@
           <button class="outline-button" id="provenanceButton">
             Read provenance <span>↗</span>
           </button>
+        </section>
+        <section class="security-card" aria-labelledby="securityTitle">
+          <div class="security-copy">
+            <div class="security-heading">
+              <div class="banner-mark">↻</div>
+              <div>
+                <h2 id="securityTitle">One source event, one credit.</h2>
+                <p>
+                  The first valid proof can settle a reading. Submitting the
+                  same proof again hits <span class="mono">QueryAlreadyProcessed</span>
+                  before the ledger state changes.
+                </p>
+              </div>
+            </div>
+            <span class="security-status" id="securityStatus">Contract guard active</span>
+          </div>
+          <div class="security-proof" aria-label="Replay protection evidence">
+            <div class="security-proof-row">
+              <span>01</span>
+              <div><strong>First proof</strong><small>SettlementRecorded</small></div>
+              <b>accepted</b>
+            </div>
+            <div class="security-proof-row rejected">
+              <span>02</span>
+              <div><strong>Same proof again</strong><small>QueryAlreadyProcessed</small></div>
+              <b>rejected</b>
+            </div>
+          </div>
         </section>
         <footer>
           <span>EnergyProof CTC · BUIDL For The Real World</span
