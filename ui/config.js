@@ -1,8 +1,12 @@
 window.ENERGYPROOF_CONFIG = {
-  sourceRpcUrl: "https://ethereum-sepolia-rpc.publicnode.com",
+  sourceRpcUrls: [
+    "https://rpc.sepolia.ethpandaops.io",
+    "https://ethereum-sepolia-rpc.publicnode.com",
+    "https://public.1rpc.io/sepolia",
+  ],
   sourceChainId: 11155111,
   sourceCurrency: "ETH",
-  creditcoinRpcUrl: "https://rpc.cc3-testnet.creditcoin.network",
+  creditcoinRpcUrls: ["https://rpc.cc3-testnet.creditcoin.network"],
   creditcoinChainId: 102031,
   creditcoinCurrency: "tCTC",
   meterAddress: "0x0d1b7c614e07B47153293469d356b6bA80978BF1",

@@ -9,8 +9,8 @@ const config = {
   ...Object.fromEntries(new URLSearchParams(location.search)),
 };
 const hasLiveConfig = Boolean(
-  config.sourceRpcUrl &&
-  config.creditcoinRpcUrl &&
+  (config.sourceRpcUrls?.length || config.sourceRpcUrl) &&
+  (config.creditcoinRpcUrls?.length || config.creditcoinRpcUrl) &&
   config.meterAddress &&
   config.ledgerAddress,
 );
@@ -27,16 +27,25 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
 }
 
-async function rpc(url, method, params) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: Date.now(), method, params }),
-  });
-  if (!response.ok) throw new Error(`${method}: HTTP ${response.status}`);
-  const result = await response.json();
-  if (result.error) throw new Error(result.error.message || method);
-  return result.result;
+async function rpc(urls, method, params) {
+  const candidates = Array.isArray(urls) ? urls : [urls];
+  let lastError;
+  for (const url of candidates) {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: Date.now(), method, params }),
+      });
+      if (!response.ok) throw new Error(`${method}: HTTP ${response.status}`);
+      const result = await response.json();
+      if (result.error) throw new Error(result.error.message || method);
+      return result.result;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error(`${method}: all RPC endpoints failed`);
 }
 
 function hexToBigInt(value) {
@@ -122,16 +131,18 @@ async function fetchLiveData() {
     return;
   }
   const [sourceHead, creditHead] = await Promise.all([
-    rpc(config.sourceRpcUrl, "eth_blockNumber", []),
-    rpc(config.creditcoinRpcUrl, "eth_blockNumber", []),
+    rpc(config.sourceRpcUrls || config.sourceRpcUrl, "eth_blockNumber", []),
+    rpc(config.creditcoinRpcUrls || config.creditcoinRpcUrl, "eth_blockNumber", []),
   ]);
+  const sourceRpc = config.sourceRpcUrls || config.sourceRpcUrl;
+  const creditcoinRpc = config.creditcoinRpcUrls || config.creditcoinRpcUrl;
   const head = Number(hexToBigInt(sourceHead));
   const fromBlock =
     Number(config.sourceStartBlock || 0) || Math.max(0, head - 20_000);
   let logs = [];
   try {
     logs = await getLogsInChunks(
-      config.sourceRpcUrl,
+    sourceRpc,
       { address: config.meterAddress, topics: [ENERGY_TOPIC] },
       fromBlock,
       head,
@@ -141,7 +152,7 @@ async function fetchLiveData() {
   if (!logs.length) logs = await getIndexedLogs(ENERGY_TOPIC, fromBlock);
   const creditHeadNumber = Number(hexToBigInt(creditHead));
   const settlementLogs = await getLogsInChunks(
-    config.creditcoinRpcUrl,
+    creditcoinRpc,
     { address: config.ledgerAddress, topics: [SETTLEMENT_TOPIC] },
     Number(config.creditcoinStartBlock || 0) || Math.max(0, creditHeadNumber - 100_000),
     creditHeadNumber,
@@ -166,7 +177,7 @@ async function fetchLiveData() {
       isSettled:
         word(
           await call(
-            config.creditcoinRpcUrl,
+            creditcoinRpc,
             config.ledgerAddress,
             `${SETTLED_SELECTOR}${reading.id.slice(2)}`,
           ),
@@ -175,7 +186,7 @@ async function fetchLiveData() {
     })),
   );
   const total = word(
-    await call(config.creditcoinRpcUrl, config.ledgerAddress, TOTAL_SELECTOR),
+    await call(creditcoinRpc, config.ledgerAddress, TOTAL_SELECTOR),
   );
   renderLiveReadings(withStatus);
   renderProofHero(withStatus);
