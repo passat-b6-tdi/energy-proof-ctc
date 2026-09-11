@@ -30,7 +30,7 @@ Full flow: [`docs/architecture.md`](docs/architecture.md). Diagrams: [`docs/diag
 Attestcoin integration writeup: [`docs/attestcoin-integration.md`](docs/attestcoin-integration.md).
 Security invariants → tests: [`docs/security-invariants.md`](docs/security-invariants.md).
 Contract NatSpec reference: [`docs/contract-reference.md`](docs/contract-reference.md).
-Published documentation: [EnergyProof CTC on GitBook](https://energy-proof-ctc.gitbook.io/docs).
+Published documentation: [EnergyProof CTC on GitBook](https://b0gdaniy.gitbook.io/energy-proof/).
 
 ## Demo UI
 

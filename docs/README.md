@@ -7,6 +7,9 @@ Creditcoin ledger changes state.
 The live prototype settled 10 readings from 3 producers for `12,975 Wh` and
 rejected a replay with `QueryAlreadyProcessed`.
 
+Read the published documentation at
+[b0gdaniy.gitbook.io/energy-proof](https://b0gdaniy.gitbook.io/energy-proof/).
+
 Start with [How it works](architecture.md), then read the
 [Attestcoin integration](attestcoin-integration.md) and
 [Security invariants](security-invariants.md).
