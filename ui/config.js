@@ -1,5 +1,3 @@
-// Public RPC endpoints are safe to expose in a browser. Contract addresses
-// are filled after deployment; URL parameters can override them for a hosted demo.
 window.ENERGYPROOF_CONFIG = {
   sourceRpcUrl: "https://ethereum-sepolia-rpc.publicnode.com",
   sourceChainId: 11155111,
@@ -13,5 +11,6 @@ window.ENERGYPROOF_CONFIG = {
   sourceStartBlock: 11654574,
   creditcoinStartBlock: 5446565,
   sourceExplorer: "https://sepolia.etherscan.io",
+  sourceIndexerUrl: "https://eth-sepolia.blockscout.com/api/v2",
   creditcoinExplorer: "https://creditcoin-testnet.blockscout.com",
 };

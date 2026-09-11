@@ -74,6 +74,38 @@ async function getLogsInChunks(url, filter, fromBlock, toBlock) {
   return chunks.flat();
 }
 
+async function getIndexedLogs(topic, fromBlock) {
+  if (!config.sourceIndexerUrl) return [];
+  const baseUrl = `${config.sourceIndexerUrl.replace(/\/$/, '')}/addresses/${config.meterAddress}/logs`;
+  const logs = [];
+  let nextUrl = baseUrl;
+  for (let page = 0; nextUrl && page < 10; page += 1) {
+    const response = await fetch(nextUrl);
+    if (!response.ok) throw new Error(`Blockscout logs: HTTP ${response.status}`);
+    const result = await response.json();
+    for (const item of result.items || []) {
+      if (
+        Number(item.block_number) >= fromBlock &&
+        item.topics?.[0]?.toLowerCase() === topic.toLowerCase()
+      ) {
+        logs.push({
+          address: item.address?.hash,
+          blockNumber: `0x${Number(item.block_number).toString(16)}`,
+          data: item.data,
+          topics: item.topics,
+          transactionHash: item.transaction_hash,
+        });
+      }
+    }
+    const params = result.next_page_params;
+    nextUrl = params
+      ? `${baseUrl}?${new URLSearchParams(params).toString()}`
+      : "";
+    if (result.items?.length && Number(result.items.at(-1).block_number) < fromBlock) break;
+  }
+  return logs;
+}
+
 async function loadLiveData() {
   if (refreshInFlight) return;
   refreshInFlight = true;
@@ -96,12 +128,17 @@ async function fetchLiveData() {
   const head = Number(hexToBigInt(sourceHead));
   const fromBlock =
     Number(config.sourceStartBlock || 0) || Math.max(0, head - 20_000);
-  const logs = await getLogsInChunks(
-    config.sourceRpcUrl,
-    { address: config.meterAddress, topics: [ENERGY_TOPIC] },
-    fromBlock,
-    head,
-  );
+  let logs = [];
+  try {
+    logs = await getLogsInChunks(
+      config.sourceRpcUrl,
+      { address: config.meterAddress, topics: [ENERGY_TOPIC] },
+      fromBlock,
+      head,
+    );
+  } catch {
+  }
+  if (!logs.length) logs = await getIndexedLogs(ENERGY_TOPIC, fromBlock);
   const creditHeadNumber = Number(hexToBigInt(creditHead));
   const settlementLogs = await getLogsInChunks(
     config.creditcoinRpcUrl,
