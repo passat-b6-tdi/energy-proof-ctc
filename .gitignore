@@ -15,6 +15,7 @@ yarn-error.log
 
 # deployment artifacts with private data
 deployments/*.local.json
+docs/generated-contracts/
 
 # editor / os
 .DS_Store

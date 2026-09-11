@@ -20,6 +20,7 @@
     "wire:creditcoin": "bash script/wire-creditcoin.sh",
     "ui": "python3 -m http.server 4173 --directory ui",
     "typecheck": "tsc --noEmit",
+    "docs:contracts": "forge doc --out docs/generated-contracts --build",
     "format": "prettier --write \"worker/**/*.ts\"",
     "format:sol": "forge fmt"
   },
