@@ -5,7 +5,7 @@ site:
 
 structure:
   - type: space
-    key: energy-proof-ctc
+    key: space-energy-proof-ctc
     title: EnergyProof CTC
     path: docs
     default: true
