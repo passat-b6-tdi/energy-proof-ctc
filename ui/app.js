@@ -8,6 +8,10 @@ const config = {
   ...(window.ENERGYPROOF_CONFIG || {}),
   ...Object.fromEntries(new URLSearchParams(location.search)),
 };
+const protocolDocsLink = document.querySelector("#protocolDocsLink");
+if (protocolDocsLink && config.protocolDocsUrl) {
+  protocolDocsLink.href = config.protocolDocsUrl;
+}
 const hasLiveConfig = Boolean(
   (config.sourceRpcUrls?.length || config.sourceRpcUrl) &&
   (config.creditcoinRpcUrls?.length || config.creditcoinRpcUrl) &&

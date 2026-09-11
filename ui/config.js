@@ -17,4 +17,5 @@ window.ENERGYPROOF_CONFIG = {
   sourceExplorer: "https://sepolia.etherscan.io",
   sourceIndexerUrl: "https://eth-sepolia.blockscout.com/api/v2",
   creditcoinExplorer: "https://creditcoin-testnet.blockscout.com",
+  protocolDocsUrl: "https://b0gdaniy.gitbook.io/energy-proof/",
 };
