@@ -12,6 +12,7 @@
     "demo:produce": "tsx worker/produce-batch.ts",
     "demo:producers": "tsx worker/demo-producers.ts",
     "demo": "tsx worker/submit-proof.ts",
+    "demo:replay": "tsx worker/replay-proof.ts",
     "deploy:decoder": "bash script/deploy-decoder.sh",
     "deploy:meter": "bash script/deploy-sepolia.sh",
     "deploy:creditcoin": "bash script/deploy-creditcoin.sh",
