@@ -6,6 +6,7 @@ import {INativeQueryVerifierExpanded as INativeQueryVerifier} from "../interface
 /// @title AttestcoinReader
 /// @notice Base contract for consuming Attestcoin transaction proofs.
 /// @dev Child contracts validate and process the verified transaction in a hook.
+/// @custom:security-contact See the repository security policy.
 abstract contract AttestcoinReader {
     /// @notice The query was already processed.
     error QueryAlreadyProcessed(bytes32 queryId);

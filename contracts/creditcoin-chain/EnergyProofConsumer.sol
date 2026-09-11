@@ -8,6 +8,7 @@ import {EvmV1Decoder} from "@gluwa/usc-contracts/contracts/decoding/EvmV1Decoder
 /// @title EnergyProofConsumer
 /// @notice Validates verified energy events and credits them on Creditcoin.
 /// @dev Accepts one matching `EnergyProduced` log per source transaction.
+/// @custom:security-contact See the repository security policy.
 contract EnergyProofConsumer is AttestcoinReader {
     /// @notice The proof used the wrong source chain.
     error UnexpectedSourceChain(uint64 chainKey);
@@ -49,6 +50,7 @@ contract EnergyProofConsumer is AttestcoinReader {
     /// @param sourceChainKey_ Attestcoin source key, not the EVM chain ID.
     /// @param energyMeter_ Trusted source-chain EnergyMeter address.
     /// @param ledger_ Destination EnergyCreditLedger address.
+    /// @dev Both contract addresses are immutable after deployment.
     constructor(uint64 sourceChainKey_, address energyMeter_, address ledger_) {
         require(energyMeter_ != address(0), ZeroEnergyMeter());
         require(ledger_ != address(0), ZeroLedger());

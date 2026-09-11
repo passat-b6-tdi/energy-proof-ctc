@@ -10,6 +10,7 @@ import {IEnergyCreditLedger} from "../interfaces/IEnergyCreditLedger.sol";
 ///         readings.
 /// @dev The deployer grants `CONSUMER_ROLE` to the deployed consumer. This role
 ///      is the only write authorization; each reading ID is settled once.
+/// @custom:security-contact See the repository security policy.
 contract EnergyCreditLedger is IEnergyCreditLedger, AccessControl {
     /// @notice A settlement cannot credit the zero address.
     error ZeroProducer();
@@ -41,6 +42,7 @@ contract EnergyCreditLedger is IEnergyCreditLedger, AccessControl {
     mapping(bytes32 => Settlement) private _settlements;
 
     /// @notice Grant the deployer the admin role used to wire the consumer.
+    /// @dev The admin must grant `CONSUMER_ROLE` to the proof consumer.
     constructor() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }

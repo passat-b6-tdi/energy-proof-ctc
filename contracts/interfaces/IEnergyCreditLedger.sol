@@ -4,6 +4,7 @@ pragma solidity 0.8.30;
 /// @title IEnergyCreditLedger
 /// @notice Interface for the Creditcoin energy ledger.
 /// @dev Implementations should preserve the one-settlement-per-reading rule.
+/// @custom:security-contact See the repository security policy.
 interface IEnergyCreditLedger {
     /// @notice Audit record for one settled reading.
     struct Settlement {

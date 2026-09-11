@@ -6,6 +6,7 @@ import {Register} from "./Register.sol";
 /// @title EnergyMeter
 /// @notice Records unique, bounded energy-production readings.
 /// @dev Reading IDs are write-once and are also used for cross-chain replay protection.
+/// @custom:security-contact See the repository security policy.
 contract EnergyMeter is Register {
     /// @notice The reading identifier cannot be empty.
     error ZeroReadingId();
@@ -95,6 +96,7 @@ contract EnergyMeter is Register {
         return _producerDatas[producer].readingIds;
     }
 
+    /// @param energyParams Reading to validate and store.
     function _recordProduction(EnergyParams memory energyParams) internal {
         require(energyParams.readingId != bytes32(0), ZeroReadingId());
         require(energyParams.producer != address(0), ZeroProducer());
@@ -116,6 +118,8 @@ contract EnergyMeter is Register {
         emit EnergyProduced(msg.sender, energyParams.producer, energyParams.readingId, energyParams.wattHours);
     }
 
+    /// @param userData Aggregate data to update.
+    /// @param energyParams Reading whose value and ID are appended.
     function _setUserData(UserData storage userData, EnergyParams memory energyParams) internal {
         userData.totalWattHoursRecorded += energyParams.wattHours;
         userData.readingIds.push(energyParams.readingId);
