@@ -106,7 +106,7 @@ async function fetchLiveData() {
   const settlementLogs = await getLogsInChunks(
     config.creditcoinRpcUrl,
     { address: config.ledgerAddress, topics: [SETTLEMENT_TOPIC] },
-    Math.max(0, creditHeadNumber - 20_000),
+    Number(config.creditcoinStartBlock || 0) || Math.max(0, creditHeadNumber - 100_000),
     creditHeadNumber,
   );
   const settlements = new Map(

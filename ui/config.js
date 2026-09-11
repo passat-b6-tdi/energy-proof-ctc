@@ -10,7 +10,8 @@ window.ENERGYPROOF_CONFIG = {
   meterAddress: "0x0d1b7c614e07B47153293469d356b6bA80978BF1",
   ledgerAddress: "0x100FEb2D822CBb32C4e8f047D43615AC8851Ed79",
   consumerAddress: "0x9e3743dEC51b82BD83d7fF7557650BF1C75ee096",
-  sourceStartBlock: 0,
+  sourceStartBlock: 11654574,
+  creditcoinStartBlock: 5446565,
   sourceExplorer: "https://sepolia.etherscan.io",
   creditcoinExplorer: "https://creditcoin-testnet.blockscout.com",
 };
