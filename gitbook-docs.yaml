@@ -1,5 +1,13 @@
-root: ./
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+
+site:
+  title: EnergyProof CTC
 
 structure:
-  readme: README.md
-  summary: SUMMARY.md
+  - type: space
+    key: energy-proof-ctc
+    title: EnergyProof CTC
+    path: docs
+    default: true
+    content:
+      directory: ./
