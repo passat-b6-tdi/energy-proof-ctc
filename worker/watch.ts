@@ -1,1 +1,1 @@
-import './submit-proof.js';
+import "./submit-proof.js";
