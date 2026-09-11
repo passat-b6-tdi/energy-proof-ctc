@@ -27,7 +27,27 @@ function explorerUrl(base: string, hash: string): string {
 }
 
 function extractErrorData(error: any): string | undefined {
-  return error?.data ?? error?.info?.error?.data ?? error?.error?.data;
+  const candidates = [
+    error?.data,
+    error?.info?.error?.data,
+    error?.error?.data,
+    error?.info?.data,
+    error?.revert?.data,
+  ];
+  return candidates.find(
+    (value): value is string =>
+      typeof value === "string" && value.startsWith("0x") && value.length >= 10,
+  );
+}
+
+function decodeErrorName(contract: Contract, error: any): string {
+  const data = extractErrorData(error);
+  if (!data) return "UnknownRevert";
+  try {
+    return contract.interface.parseError(data)?.name ?? "UnknownRevert";
+  } catch {
+    return "UnknownRevert";
+  }
 }
 
 async function main(): Promise<void> {
@@ -116,6 +136,17 @@ async function main(): Promise<void> {
 
   const gasLimit =
     21_000n + BigInt(proof.continuityProof.roots.length) * 5_000n + 20_000n;
+  let preflightErrorName = "UnknownRevert";
+  try {
+    await consumer.execute.staticCall(...args, { gasLimit });
+    throw new Error("Replay unexpectedly passed preflight");
+  } catch (error: any) {
+    preflightErrorName = decodeErrorName(consumer, error);
+    if (preflightErrorName !== "QueryAlreadyProcessed")
+      throw new Error(`Replay preflight reverted with ${preflightErrorName}`);
+    console.log(`Replay preflight: ${preflightErrorName}`);
+  }
+
   let replayTxHash = "";
   try {
     const submission = await consumer.execute(...args, { gasLimit });
@@ -128,18 +159,16 @@ async function main(): Promise<void> {
       error?.receipt?.transactionHash ??
       error?.transactionHash ??
       "";
-    const data = extractErrorData(error);
-    let errorName = "UnknownRevert";
-    if (data) {
-      try {
-        errorName = consumer.interface.parseError(data)?.name ?? errorName;
-      } catch {
-        // Keep the generic name if the provider omitted a decodable revert payload.
-      }
-    }
-    if (errorName !== "QueryAlreadyProcessed")
-      throw new Error(`Replay reverted with ${errorName}`);
-    console.log(`Replay rejected: ${errorName}`);
+    const errorName = decodeErrorName(consumer, error);
+    // Some Creditcoin RPC responses omit revert data from a failed receipt.
+    const resolvedErrorName =
+      errorName === "UnknownRevert" &&
+      preflightErrorName === "QueryAlreadyProcessed"
+        ? preflightErrorName
+        : errorName;
+    if (resolvedErrorName !== "QueryAlreadyProcessed")
+      throw new Error(`Replay reverted with ${resolvedErrorName}`);
+    console.log(`Replay rejected: ${resolvedErrorName}`);
     if (replayTxHash)
       console.log(
         `Replay transaction: ${explorerUrl(creditcoinExplorer, replayTxHash)}`,
