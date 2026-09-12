@@ -1,5 +1,9 @@
 # Deployments and live evidence
 
+## Main application
+
+[Open EnergyProof](https://energy-proof.b0gdaniy.xyz/)
+
 ## Contracts
 
 | Contract | Network | Address |

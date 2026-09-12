@@ -12,6 +12,9 @@ This documentation is published at
 The GitBook mirror is available at
 [b0gdaniy.gitbook.io/energy-proof](https://b0gdaniy.gitbook.io/energy-proof/).
 
+The main application is live at
+[energy-proof.b0gdaniy.xyz](https://energy-proof.b0gdaniy.xyz/).
+
 Start with [How it works](architecture.md), then read the
 [Attestcoin integration](attestcoin-integration.md) and
 [Security invariants](security-invariants.md).

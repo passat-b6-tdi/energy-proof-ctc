@@ -33,6 +33,8 @@ Contract NatSpec reference: [`docs/contract-reference.md`](docs/contract-referen
 Published documentation: [EnergyProof CTC on GitHub Pages](https://passat-b6-tdi.github.io/energy-proof-ctc/).
 GitBook mirror: [b0gdaniy.gitbook.io/energy-proof](https://b0gdaniy.gitbook.io/energy-proof/).
 
+Main application: [energy-proof.b0gdaniy.xyz](https://energy-proof.b0gdaniy.xyz/).
+
 ## Demo UI
 
 The standalone dashboard lives in [`ui/`](ui/). After deployment it
