@@ -14,6 +14,8 @@ The GitBook mirror is available at
 
 The main application is live at
 [energy-proof.b0gdaniy.xyz](https://energy-proof.b0gdaniy.xyz/).
+The source repository is
+[github.com/passat-b6-tdi/energy-proof-ctc](https://github.com/passat-b6-tdi/energy-proof-ctc).
 
 Start with [How it works](architecture.md), then read the
 [Attestcoin integration](attestcoin-integration.md) and

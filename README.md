@@ -34,6 +34,7 @@ Published documentation: [EnergyProof CTC on GitHub Pages](https://passat-b6-tdi
 GitBook mirror: [b0gdaniy.gitbook.io/energy-proof](https://b0gdaniy.gitbook.io/energy-proof/).
 
 Main application: [energy-proof.b0gdaniy.xyz](https://energy-proof.b0gdaniy.xyz/).
+Source repository: [github.com/passat-b6-tdi/energy-proof-ctc](https://github.com/passat-b6-tdi/energy-proof-ctc).
 
 ## Demo UI
 

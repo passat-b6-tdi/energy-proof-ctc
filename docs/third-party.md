@@ -16,3 +16,9 @@ EnergyProof is released under the MIT license.
 - [Creditcoin USC / Attestcoin documentation](https://docs.creditcoin.org/creditcoin-usc)
 - [Creditcoin USC chain environments](https://docs.creditcoin.org/creditcoin-usc/usc-chains-environments)
 - [Foundry `forge doc` reference](https://getfoundry.sh/reference/forge/doc)
+
+## Source repositories
+
+- [EnergyProof CTC](https://github.com/passat-b6-tdi/energy-proof-ctc)
+- [DefiEnergySupply](https://github.com/passat-b6-tdi/defi-energy-supply)
+- [Attestcoin protocol examples](https://github.com/gluwa/attestcoin-protocol-examples)
