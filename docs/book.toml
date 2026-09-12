@@ -1,0 +1,9 @@
+[book]
+title = "EnergyProof CTC"
+authors = ["Bohdan Pukhno"]
+language = "en"
+src = "."
+
+[output.html]
+site-url = "/energy-proof-ctc/"
+git-repository-url = "https://github.com/passat-b6-tdi/energy-proof-ctc"
